@@ -31,9 +31,20 @@ namespace CodingStandards
             context.RegisterSyntaxNodeAction<SyntaxKind>(AnalyzeFieldDeclaration, SyntaxKind.FieldDeclaration);
         }
 
-        private static void AnalyzeFieldDeclaration(SyntaxNodeAnalysisContext cotnext)
+        private static void AnalyzeFieldDeclaration(SyntaxNodeAnalysisContext context)
         {
-
+            var fieldDeclaration = (FieldDeclarationSyntax)context.Node;
+            var accessToken = fieldDeclaration.ChildTokens()
+                .SingleOrDefault(token => token.Kind() == SyntaxKind.PublicKeyword);
+            // Note: Not finding protected or internal
+            if (accessToken != null)
+            {
+                // Find the name of the field:
+                var name = fieldDeclaration.DescendantTokens().SingleOrDefault(token => token.IsKind(SyntaxKind.IdentifierToken)).Value;
+                var diagnostic = Diagnostic.Create(Rule, fieldDeclaration.GetLocation(), name, accessToken.Value);
+                context.ReportDiagnostic(diagnostic);
+            
+            }
         }
         private static void AnalyzeSymbol(SymbolAnalysisContext context)
         {
