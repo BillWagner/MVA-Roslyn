@@ -28,9 +28,13 @@ namespace CodingStandards
         public override void Initialize(AnalysisContext context)
         {
             // TODO: Consider registering other actions that act on syntax instead of or in addition to symbols
-            context.RegisterSymbolAction(AnalyzeSymbol, SymbolKind.NamedType);
+            context.RegisterSyntaxNodeAction<SyntaxKind>(AnalyzeFieldDeclaration, SyntaxKind.FieldDeclaration);
         }
 
+        private static void AnalyzeFieldDeclaration(SyntaxNodeAnalysisContext cotnext)
+        {
+
+        }
         private static void AnalyzeSymbol(SymbolAnalysisContext context)
         {
             // TODO: Replace the following code with your own analysis, generating Diagnostic objects for any issues you find
