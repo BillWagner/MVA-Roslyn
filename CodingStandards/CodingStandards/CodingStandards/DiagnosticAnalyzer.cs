@@ -37,27 +37,13 @@ namespace CodingStandards
             var accessToken = fieldDeclaration.ChildTokens()
                 .SingleOrDefault(token => token.Kind() == SyntaxKind.PublicKeyword);
             // Note: Not finding protected or internal
-            if (accessToken != null)
+            if (accessToken.Kind() != SyntaxKind.None)
             {
                 // Find the name of the field:
                 var name = fieldDeclaration.DescendantTokens().SingleOrDefault(token => token.IsKind(SyntaxKind.IdentifierToken)).Value;
                 var diagnostic = Diagnostic.Create(Rule, fieldDeclaration.GetLocation(), name, accessToken.Value);
                 context.ReportDiagnostic(diagnostic);
             
-            }
-        }
-        private static void AnalyzeSymbol(SymbolAnalysisContext context)
-        {
-            // TODO: Replace the following code with your own analysis, generating Diagnostic objects for any issues you find
-            var namedTypeSymbol = (INamedTypeSymbol)context.Symbol;
-
-            // Find just those named type symbols with names containing lowercase letters.
-            if (namedTypeSymbol.Name.ToCharArray().Any(char.IsLower))
-            {
-                // For all such symbols, produce a diagnostic.
-                var diagnostic = Diagnostic.Create(Rule, namedTypeSymbol.Locations[0], namedTypeSymbol.Name);
-
-                context.ReportDiagnostic(diagnostic);
             }
         }
     }

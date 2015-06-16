@@ -37,12 +37,26 @@ namespace CodingStandards
             var diagnosticSpan = diagnostic.Location.SourceSpan;
 
             // Find the type declaration identified by the diagnostic.
-            var declaration = root.FindToken(diagnosticSpan.Start).Parent.AncestorsAndSelf().OfType<TypeDeclarationSyntax>().First();
+            var declaration = root.FindToken(diagnosticSpan.Start).Parent.AncestorsAndSelf().OfType<FieldDeclarationSyntax>().First();
 
             // Register a code action that will invoke the fix.
             context.RegisterCodeFix(
-                CodeAction.Create("Make uppercase", c => MakeUppercaseAsync(context.Document, declaration, c)),
+                CodeAction.Create("Make Private", c => MakePrivateDeclarationAsync(context.Document, declaration, c)),
                 diagnostic);
+        }
+
+        private async Task<Document> MakePrivateDeclarationAsync(Document document, FieldDeclarationSyntax declaration, CancellationToken c)
+        {
+            var accessToken = declaration.ChildTokens()
+                .SingleOrDefault(token => token.Kind() == SyntaxKind.PublicKeyword);
+
+            var privateAccessToken = SyntaxFactory.Token(SyntaxKind.PrivateKeyword);
+
+            var root = await document.GetSyntaxRootAsync(c);
+            var newRoot = root.ReplaceToken(accessToken, privateAccessToken);
+
+            return document.WithSyntaxRoot(newRoot);
+
         }
 
         private async Task<Solution> MakeUppercaseAsync(Document document, TypeDeclarationSyntax typeDecl, CancellationToken cancellationToken)
