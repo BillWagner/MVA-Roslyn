@@ -23,5 +23,14 @@ namespace StudentLibrary
         }
 
         public int PointsEarned { get { return pointsEarned; } }
+
+        public string GetFormattedName()
+        {
+            var name = firstName;
+            name.PadRight(20);
+            string.Concat(name, lastName);
+            name.PadRight(40);
+            return name;
+        }
     }
 }
