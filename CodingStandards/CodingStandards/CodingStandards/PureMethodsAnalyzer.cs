@@ -29,7 +29,19 @@ namespace CodingStandards
 
         private void AnalyzeNode(SyntaxNodeAnalysisContext context)
         {
-            throw new NotImplementedException();
+            var invocationExpression = (InvocationExpressionSyntax)context.Node;
+
+            // Rule:  Look at the syntax only first. It will make our analyzer faster,
+            // because the compiler does not do as much work.
+            var memberAccessExpr = invocationExpression.Expression as MemberAccessExpressionSyntax;
+
+            // Likely, we'll use this a lot because it's how we get information in the model
+            var memberSymbol = context.SemanticModel.GetSymbolInfo(memberAccessExpr)
+                .Symbol as IMethodSymbol;
+            if (memberSymbol.ReturnsVoid)
+            {
+                // This method returns nothing. short circuit and exit
+            }
         }
     }
 }
