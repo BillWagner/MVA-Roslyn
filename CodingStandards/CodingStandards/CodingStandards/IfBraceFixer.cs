@@ -42,6 +42,15 @@ namespace CodingStandards
                 .Parent.AncestorsAndSelf()
                 .OfType<ExpressionStatementSyntax>().First();
 
+            // Register a code action that will invoke the fix.
+            context.RegisterCodeFix(
+                CodeAction.Create("Enclose clause in { }", c => MakeBlockAsync(context.Document, statement, c)),
+                diagnostic);
+        }
+
+        private Task<Document> MakeBlockAsync(Document document, ExpressionStatementSyntax statement, CancellationToken c)
+        {
+            throw new NotImplementedException();
         }
     }
 }
