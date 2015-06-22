@@ -48,9 +48,15 @@ namespace CodingStandards
                 diagnostic);
         }
 
-        private Task<Document> MakeBlockAsync(Document document, ExpressionStatementSyntax statement, CancellationToken c)
+        private async Task<Document> MakeBlockAsync(Document document, ExpressionStatementSyntax ifChildStatement, CancellationToken c)
         {
-            throw new NotImplementedException();
+             var block = SyntaxFactory.Block(ifChildStatement);
+            // Replace the old statement with the block:
+            var root = await document.GetSyntaxRootAsync();
+            var newRoot = root.ReplaceNode((SyntaxNode)ifChildStatement, block);
+
+            var newDocument = document.WithSyntaxRoot(newRoot);
+            return newDocument;
         }
     }
 }
