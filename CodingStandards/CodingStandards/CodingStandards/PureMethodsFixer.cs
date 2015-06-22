@@ -42,7 +42,7 @@ namespace CodingStandards
             // Find the type declaration identified by the diagnostic.
             var statement = root.FindToken(diagnosticSpan.Start)
                 .Parent.AncestorsAndSelf()
-                .OfType<InvocationExpressionSyntax>().First();
+                .OfType<ExpressionStatementSyntax>().First();
 
             // Register a code action that will invoke the fix.
             context.RegisterCodeFix(
@@ -50,9 +50,19 @@ namespace CodingStandards
                 diagnostic);
         }
 
-        private Task<Document> AssignMethodReturnToNewVariable(Document document, ExpressionStatementSyntax statement, CancellationToken c)
+        private async Task<Document> AssignMethodReturnToNewVariable(Document document, ExpressionStatementSyntax statement, CancellationToken c)
         {
-            throw new NotImplementedException();
+            var rValueExpr = statement.ToString();
+
+            var declaration = SyntaxFactory.ParseStatement($"var returnValue = {rValueExpr}");
+
+            // Replace the old statement with the block:
+            var root = await document.GetSyntaxRootAsync();
+            var newRoot = root.ReplaceNode((SyntaxNode)statement, declaration);
+
+            var newDocument = document.WithSyntaxRoot(newRoot);
+            return newDocument;
+
         }
     }
 }
