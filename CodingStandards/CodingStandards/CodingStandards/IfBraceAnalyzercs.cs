@@ -13,10 +13,10 @@ namespace CodingStandards
     [DiagnosticAnalyzer(LanguageNames.CSharp)]
     public class IfBraceAnalyzercs : DiagnosticAnalyzer
     {
-        public const string DiagnosticId = "IfBraceAnalyzercs";
-        internal static readonly LocalizableString Title = "IfBraceAnalyzercs Title";
-        internal static readonly LocalizableString MessageFormat = "IfBraceAnalyzercs '{0}'";
-        internal const string Category = "IfBraceAnalyzercs Category";
+        public const string DiagnosticId = "IfBraceAnalyzer";
+        internal static readonly LocalizableString Title = "If and else clauses must be surrounded by braces";
+        internal static readonly LocalizableString MessageFormat = "Code: '{0}' is not surrounded by braces";
+        internal const string Category = "CodingStandards";
 
         internal static DiagnosticDescriptor Rule = new DiagnosticDescriptor(DiagnosticId, Title, MessageFormat, Category, DiagnosticSeverity.Warning, true);
 
