@@ -24,6 +24,12 @@ namespace CodingStandards
 
         public override void Initialize(AnalysisContext context)
         {
+            context.RegisterSyntaxNodeAction(AnalyzeNode, SyntaxKind.InvocationExpression);
+        }
+
+        private void AnalyzeNode(SyntaxNodeAnalysisContext context)
+        {
+            throw new NotImplementedException();
         }
     }
 }
