@@ -30,7 +30,27 @@ namespace CodingStandards
             return WellKnownFixAllProviders.BatchFixer;
         }
 
-        public sealed override Task RegisterCodeFixesAsync(CodeFixContext context)
+        public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context)
+        {
+            var root = await context.Document
+                .GetSyntaxRootAsync(context.CancellationToken)
+                .ConfigureAwait(false);
+
+            var diagnostic = context.Diagnostics.First();
+            var diagnosticSpan = diagnostic.Location.SourceSpan;
+
+            // Find the type declaration identified by the diagnostic.
+            var statement = root.FindToken(diagnosticSpan.Start)
+                .Parent.AncestorsAndSelf()
+                .OfType<InvocationExpressionSyntax>().First();
+
+            // Register a code action that will invoke the fix.
+            context.RegisterCodeFix(
+                CodeAction.Create("Assign method return to new variable", c => AssignMethodReturnToNewVariable(context.Document, statement, c)),
+                diagnostic);
+        }
+
+        private Task<Document> AssignMethodReturnToNewVariable(Document document, ExpressionStatementSyntax statement, CancellationToken c)
         {
             throw new NotImplementedException();
         }
