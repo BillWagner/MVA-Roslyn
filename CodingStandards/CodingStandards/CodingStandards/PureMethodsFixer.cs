@@ -56,9 +56,10 @@ namespace CodingStandards
 
             var declaration = SyntaxFactory.ParseStatement($"var returnValue = {rValueExpr}");
 
+            var formattedDeclaration = declaration.WithTriviaFrom(statement);
             // Replace the old statement with the block:
             var root = await document.GetSyntaxRootAsync();
-            var newRoot = root.ReplaceNode((SyntaxNode)statement, declaration);
+            var newRoot = root.ReplaceNode((SyntaxNode)statement, formattedDeclaration);
 
             var newDocument = document.WithSyntaxRoot(newRoot);
             return newDocument;
