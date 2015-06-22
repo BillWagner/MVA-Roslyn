@@ -40,6 +40,19 @@ namespace CodingStandards
                 var diagnostic = Diagnostic.Create(Rule, location, "true clause");
                 context.ReportDiagnostic(diagnostic);
             }
+
+            // check the else clause:
+            var elseStatement = statement.Else;
+            if (elseStatement != null)
+            {
+                if (elseStatement.Statement is ExpressionStatementSyntax)
+                {
+                    var location = elseStatement.Statement.GetLocation();
+                    var diagnostic = Diagnostic.Create(Rule, location, "false (else) clause");
+                    context.ReportDiagnostic(diagnostic);
+                }
+            }
+
         }
     }
 }
