@@ -41,6 +41,15 @@ namespace CodingStandards
             if (memberSymbol.ReturnsVoid)
             {
                 // This method returns nothing. short circuit and exit
+                return;
+            }
+
+            // if the parent isn't an EqualsValueExpression, it probably isn't assigned;
+            if (invocationExpression.Parent.Kind() == SyntaxKind.ExpressionStatement)
+            {
+                // Not an assignment
+                var diagnostic = Diagnostic.Create(Rule, memberAccessExpr.GetLocation(), memberAccessExpr.Name);
+                context.ReportDiagnostic(diagnostic);
             }
         }
     }
