@@ -38,6 +38,7 @@
     <Compile Include="IfBraceFixer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PureMethodsAnalyzer.cs" />
+    <Compile Include="PureMethodsFixer.cs" />
     <Compile Include="Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
