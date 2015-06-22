@@ -27,9 +27,19 @@ namespace CodingStandards
             context.RegisterSyntaxNodeAction(AnalyzeIfBlock, SyntaxKind.IfStatement);
         }
 
-        private void AnalyzeIfBlock(SyntaxNodeAnalysisContext obj)
+        private void AnalyzeIfBlock(SyntaxNodeAnalysisContext context)
         {
-            throw new NotImplementedException();
+            var statement = context.Node as IfStatementSyntax;
+
+            var thenClause = statement.Statement;
+
+            if (thenClause is ExpressionStatementSyntax)
+            {
+                // create the diagnostic:
+                var location = thenClause.GetLocation();
+                var diagnostic = Diagnostic.Create(Rule, location, "true clause");
+                context.ReportDiagnostic(diagnostic);
+            }
         }
     }
 }
