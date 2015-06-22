@@ -50,13 +50,30 @@ namespace CodingStandards
                 diagnostic);
 
             context.RegisterCodeFix(
-                CodeAction.Create("Assign method return to first parameter", c => AssignMethodReturnToFirstParameter(context.Document, statement, c)),
+                CodeAction.Create("Assign method return to receiver", 
+                c => AssignMethodReturnToReceiverAsync(context, context.Document, statement, c)),
                 diagnostic);
         }
 
-        private Task<Document> AssignMethodReturnToFirstParameter(Document document, ExpressionStatementSyntax statement, CancellationToken c)
+        private async Task<Document> AssignMethodReturnToReceiverAsync(CodeFixContext context, Document document, ExpressionStatementSyntax statement, CancellationToken c)
         {
-            throw new NotImplementedException();
+            var rValueExpr = statement.ToString();
+
+            var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken);
+            var memberAccess = root.FindNode(context.Span)?.FirstAncestorOrSelf<MemberAccessExpressionSyntax>();
+            var receiver = memberAccess.Expression;
+            var receiverName = receiver.ToString();
+
+            var declaration = SyntaxFactory
+                .ParseStatement($"{receiverName} = {rValueExpr}");
+
+            var formattedDeclaration = declaration.WithTriviaFrom(statement);
+            // Replace the old statement with the block:
+            var newRoot = root.ReplaceNode((SyntaxNode)statement, formattedDeclaration);
+
+            var newDocument = document.WithSyntaxRoot(newRoot);
+            return newDocument;
+
         }
 
         private async Task<Document> AssignMethodReturnToNewVariable(Document document, ExpressionStatementSyntax statement, CancellationToken c)
