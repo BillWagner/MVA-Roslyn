@@ -28,9 +28,20 @@ namespace CodingStandards
             return WellKnownFixAllProviders.BatchFixer;
         }
 
-        public sealed override Task RegisterCodeFixesAsync(CodeFixContext context)
+        public sealed override async Task RegisterCodeFixesAsync(CodeFixContext context)
         {
-            throw new NotImplementedException();
+            var root = await context.Document
+                .GetSyntaxRootAsync(context.CancellationToken)
+                .ConfigureAwait(false);
+
+            var diagnostic = context.Diagnostics.First();
+            var diagnosticSpan = diagnostic.Location.SourceSpan;
+
+            // Find the type declaration identified by the diagnostic.
+            var statement = root.FindToken(diagnosticSpan.Start)
+                .Parent.AncestorsAndSelf()
+                .OfType<ExpressionStatementSyntax>().First();
+
         }
     }
 }
