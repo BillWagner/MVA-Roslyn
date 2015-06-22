@@ -48,6 +48,15 @@ namespace CodingStandards
             context.RegisterCodeFix(
                 CodeAction.Create("Assign method return to new variable", c => AssignMethodReturnToNewVariable(context.Document, statement, c)),
                 diagnostic);
+
+            context.RegisterCodeFix(
+                CodeAction.Create("Assign method return to first parameter", c => AssignMethodReturnToFirstParameter(context.Document, statement, c)),
+                diagnostic);
+        }
+
+        private Task<Document> AssignMethodReturnToFirstParameter(Document document, ExpressionStatementSyntax statement, CancellationToken c)
+        {
+            throw new NotImplementedException();
         }
 
         private async Task<Document> AssignMethodReturnToNewVariable(Document document, ExpressionStatementSyntax statement, CancellationToken c)
