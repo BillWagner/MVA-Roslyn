@@ -35,6 +35,7 @@
     <Compile Include="CodeFixProvider.cs" />
     <Compile Include="DiagnosticAnalyzer.cs" />
     <Compile Include="IfBraceAnalyzercs.cs" />
+    <Compile Include="IfBraceFixer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PureMethodsAnalyzer.cs" />
     <Compile Include="Resources.Designer.cs">
