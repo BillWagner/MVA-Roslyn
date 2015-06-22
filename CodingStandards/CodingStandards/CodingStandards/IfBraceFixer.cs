@@ -18,12 +18,9 @@ namespace CodingStandards
     [ExportCodeFixProvider(LanguageNames.CSharp, Name = nameof(IfBraceFixer)), Shared]
     public class IfBraceFixer : CodeFixProvider
     {
-        // TODO: Replace with actual diagnostic id that should trigger this fix.
-        public const string DiagnosticId = "IfBraceFixer";
-
         public sealed override ImmutableArray<string> FixableDiagnosticIds
         {
-            get { return ImmutableArray.Create(DiagnosticId); }
+            get { return ImmutableArray.Create(IfBraceAnalyzercs.DiagnosticId); }
         }
 
         public sealed override FixAllProvider GetFixAllProvider()
