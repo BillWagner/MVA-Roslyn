@@ -58,11 +58,22 @@ namespace CodingStandards
         private async Task<Document> AssignMethodReturnToReceiverAsync(CodeFixContext context, Document document, ExpressionStatementSyntax statement, CancellationToken c)
         {
             var rValueExpr = statement.ToString();
-
             var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken);
             var memberAccess = root.FindNode(context.Span)?.FirstAncestorOrSelf<MemberAccessExpressionSyntax>();
+
             var receiver = memberAccess.Expression;
-            var receiverName = receiver.ToString();
+            string receiverName = default(string);
+            if (receiver.IsKind(SyntaxKind.IdentifierName))
+            {
+                receiverName = receiver.ToString();
+            }
+            else
+            {
+                var invocation = (statement
+                    .ChildNodes().First() as InvocationExpressionSyntax);
+                var firstArgument = invocation.ArgumentList.Arguments.First();
+                receiverName = firstArgument.ToString();
+            }
 
             var declaration = SyntaxFactory
                 .ParseStatement($"{receiverName} = {rValueExpr}");
