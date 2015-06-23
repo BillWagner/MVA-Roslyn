@@ -40,7 +40,7 @@ namespace CodingStandards
             // Find the type declaration identified by the diagnostic.
             var statement = root.FindToken(diagnosticSpan.Start)
                 .Parent.AncestorsAndSelf()
-                .OfType<ExpressionStatementSyntax>().First();
+                .OfType<StatementSyntax>().First();
 
             // Register a code action that will invoke the fix.
             context.RegisterCodeFix(
@@ -48,9 +48,9 @@ namespace CodingStandards
                 diagnostic);
         }
 
-        private async Task<Document> MakeBlockAsync(Document document, ExpressionStatementSyntax ifChildStatement, CancellationToken c)
+        private async Task<Document> MakeBlockAsync(Document document, StatementSyntax ifChildStatement, CancellationToken c)
         {
-             var block = SyntaxFactory.Block(ifChildStatement);
+            var block = SyntaxFactory.Block(ifChildStatement);
             // Replace the old statement with the block:
             var root = await document.GetSyntaxRootAsync();
             var newRoot = root.ReplaceNode((SyntaxNode)ifChildStatement, block);
