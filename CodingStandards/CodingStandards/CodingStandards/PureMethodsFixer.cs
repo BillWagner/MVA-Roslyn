@@ -94,8 +94,11 @@ namespace CodingStandards
         private async Task<Document> AssignMethodReturnToNewVariable(Document document, ExpressionStatementSyntax statement, CancellationToken c)
         {
             var rValueExpr = statement.ToString();
+            var semanticModel = await document.GetSemanticModelAsync();
+            var newVariable = FindAvailableStringBuilderVariableName("returnValue",
+                statement, semanticModel);
 
-            var declaration = SyntaxFactory.ParseStatement($"var returnValue = {rValueExpr}");
+            var declaration = SyntaxFactory.ParseStatement($"var {newVariable} = {rValueExpr}");
 
             var formattedDeclaration = declaration.WithTriviaFrom(statement);
             // Replace the old statement with the block:
@@ -106,5 +109,21 @@ namespace CodingStandards
             return newDocument;
 
         }
+
+        private static string FindAvailableStringBuilderVariableName(
+            string builderNameBase,
+            ExpressionStatementSyntax assignmentExpression, 
+            SemanticModel semanticModel)
+        {
+            var builderName = builderNameBase;
+            var builderNameIncrementer = 0;
+            while (semanticModel
+                .LookupSymbols(assignmentExpression.GetLocation()
+                .SourceSpan.Start, name: builderName)
+                .Any())
+                builderName = builderNameBase + ++builderNameIncrementer;
+            return builderName;
+        }
+
     }
 }
