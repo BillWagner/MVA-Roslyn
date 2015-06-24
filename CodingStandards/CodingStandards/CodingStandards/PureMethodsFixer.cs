@@ -95,7 +95,7 @@ namespace CodingStandards
         {
             var rValueExpr = statement.ToString();
             var semanticModel = await document.GetSemanticModelAsync();
-            var newVariable = FindAvailableStringBuilderVariableName("returnValue",
+            var newVariable = FindAvailableVariableName("returnValue",
                 statement, semanticModel);
 
             var declaration = SyntaxFactory.ParseStatement($"var {newVariable} = {rValueExpr}");
@@ -110,7 +110,7 @@ namespace CodingStandards
 
         }
 
-        private static string FindAvailableStringBuilderVariableName(
+        private static string FindAvailableVariableName(
             string builderNameBase,
             ExpressionStatementSyntax assignmentExpression, 
             SemanticModel semanticModel)
