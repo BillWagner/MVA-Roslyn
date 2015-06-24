@@ -35,6 +35,10 @@ namespace CodingStandards
             // because the compiler does not do as much work.
             var memberAccessExpr = invocationExpression.Expression as MemberAccessExpressionSyntax;
 
+            // If syntax fails, return:
+            if (memberAccessExpr == null)
+                return;
+
             // Likely, we'll use this a lot because it's how we get information in the model
             var memberSymbol = context.SemanticModel.GetSymbolInfo(memberAccessExpr)
                 .Symbol as IMethodSymbol;
