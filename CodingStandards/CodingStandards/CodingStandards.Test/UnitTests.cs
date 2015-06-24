@@ -81,23 +81,32 @@ namespace StudentLibrary
             };
 
             VerifyCSharpDiagnostic(test, expected);
-            return;
 
             var fixtest = @"
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Diagnostics;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-    namespace ConsoleApplication1
+namespace StudentLibrary
+{
+    public class Student
     {
-        class TYPENAME
-        {   
+        public string firstName;
+        public string lastName;
+        public string GetFormattedName()
+        {
+            var name = firstName;
+            name = name.PadRight(20);
+            string.Concat(name, lastName);
+            name.PadRight(40);
+            return name;
         }
-    }";
-            VerifyCSharpFix(test, fixtest);
+    }
+}
+";
+            VerifyCSharpFix(test, fixtest, 1);
         }
 
         protected override CodeFixProvider GetCSharpCodeFixProvider()
