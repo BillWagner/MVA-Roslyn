@@ -49,31 +49,35 @@ namespace CodingStandards
                 CodeAction.Create("Assign method return to new variable", c => AssignMethodReturnToNewVariable(context.Document, statement, c)),
                 diagnostic);
 
-            context.RegisterCodeFix(
-                CodeAction.Create("Assign method return to receiver", 
-                c => AssignMethodReturnToReceiverAsync(context, context.Document, statement, c)),
-                diagnostic);
-        }
-
-        private async Task<Document> AssignMethodReturnToReceiverAsync(CodeFixContext context, Document document, ExpressionStatementSyntax statement, CancellationToken c)
-        {
-            var rValueExpr = statement.ToString();
-            var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken);
             var memberAccess = root.FindNode(context.Span)?.FirstAncestorOrSelf<MemberAccessExpressionSyntax>();
 
             var receiver = memberAccess.Expression;
-            string receiverName = default(string);
             if (receiver.IsKind(SyntaxKind.IdentifierName))
             {
-                receiverName = receiver.ToString();
-            }
-            else
+                context.RegisterCodeFix(
+                CodeAction.Create("Assign method return to receiver",
+                c => AssignMethodReturnToReceiverAsync(context, context.Document, statement, 
+                receiver.ToString(), c)),
+                diagnostic);
+            } else // static method
             {
                 var invocation = (statement
                     .ChildNodes().First() as InvocationExpressionSyntax);
                 var firstArgument = invocation.ArgumentList.Arguments.First();
-                receiverName = firstArgument.ToString();
+                context.RegisterCodeFix(
+                CodeAction.Create("Assign method return to first parameter",
+                c => AssignMethodReturnToReceiverAsync(context, context.Document, statement,
+                firstArgument.ToString(), c)),
+                diagnostic);
+
             }
+        }
+
+        private async Task<Document> AssignMethodReturnToReceiverAsync(CodeFixContext context, Document document, ExpressionStatementSyntax statement, string receiverName, CancellationToken c)
+        {
+            var rValueExpr = statement.ToString();
+            var root = await context.Document.GetSyntaxRootAsync(context.CancellationToken);
+            var memberAccess = root.FindNode(context.Span)?.FirstAncestorOrSelf<MemberAccessExpressionSyntax>();
 
             var declaration = SyntaxFactory
                 .ParseStatement($"{receiverName} = {rValueExpr}");
