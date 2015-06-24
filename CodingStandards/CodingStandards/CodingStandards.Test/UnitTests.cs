@@ -26,31 +26,62 @@ namespace CodingStandards.Test
         public void TestMethod2()
         {
             var test = @"
-    using System;
-    using System.Collections.Generic;
-    using System.Linq;
-    using System.Text;
-    using System.Threading.Tasks;
-    using System.Diagnostics;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-    namespace ConsoleApplication1
+namespace StudentLibrary
+{
+    public class Student
     {
-        class TypeName
-        {   
+        public string firstName;
+        public string lastName;
+        public string GetFormattedName()
+        {
+            var name = firstName;
+            name.PadRight(20);
+            string.Concat(name, lastName);
+            name.PadRight(40);
+            return name;
         }
-    }";
-            var expected = new DiagnosticResult
+    }
+}
+";
+            var expected = new DiagnosticResult[]
             {
-                Id = CodingStandardsAnalyzer.DiagnosticId,
-                Message = String.Format("Type name '{0}' contains lowercase letters", "TypeName"),
-                Severity = DiagnosticSeverity.Warning,
+            new DiagnosticResult{
+                Id = PureMethodsAnalyzer.DiagnosticId,
+                Message = String.Format("The return value from '{0}' is being ignored", "PadRight"),
+                Severity = DiagnosticSeverity.Info,
                 Locations =
                     new[] {
-                            new DiagnosticResultLocation("Test0.cs", 11, 15)
+                            new DiagnosticResultLocation("Test0.cs", 17, 13)
                         }
+            },
+            new DiagnosticResult{
+                Id = PureMethodsAnalyzer.DiagnosticId,
+                Message = String.Format("The return value from '{0}' is being ignored", "Concat"),
+                Severity = DiagnosticSeverity.Info,
+                Locations =
+                    new[] {
+                            new DiagnosticResultLocation("Test0.cs", 18, 13)
+                        }
+            },
+            new DiagnosticResult{
+                Id = PureMethodsAnalyzer.DiagnosticId,
+                Message = String.Format("The return value from '{0}' is being ignored", "PadRight"),
+                Severity = DiagnosticSeverity.Info,
+                Locations =
+                    new[] {
+                            new DiagnosticResultLocation("Test0.cs", 19, 13)
+                        }
+            }
             };
 
             VerifyCSharpDiagnostic(test, expected);
+            return;
 
             var fixtest = @"
     using System;
@@ -71,12 +102,12 @@ namespace CodingStandards.Test
 
         protected override CodeFixProvider GetCSharpCodeFixProvider()
         {
-            return new CodingStandardsCodeFixProvider();
+            return new PureMethodsFixer();
         }
 
         protected override DiagnosticAnalyzer GetCSharpDiagnosticAnalyzer()
         {
-            return new CodingStandardsAnalyzer();
+            return new PureMethodsAnalyzer();
         }
     }
 }
