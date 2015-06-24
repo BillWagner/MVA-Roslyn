@@ -18,6 +18,7 @@ namespace StudentLibrary
             bool b6 = true;
 
             if (b1)
+                return;
                 Console.WriteLine("b1");
 
             if (b2)
