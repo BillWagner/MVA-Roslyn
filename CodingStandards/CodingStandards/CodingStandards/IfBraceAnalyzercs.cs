@@ -33,7 +33,7 @@ namespace CodingStandards
 
             var thenClause = statement.Statement;
 
-            if (!(thenClause is BlockSyntax))
+            if (thenClause is StatementSyntax)
             {
                 // create the diagnostic:
                 var location = thenClause.GetLocation();
@@ -45,7 +45,7 @@ namespace CodingStandards
             var elseStatement = statement.Else;
             if (elseStatement != null)
             {
-                if (!(elseStatement.Statement is BlockSyntax))
+                if (elseStatement.Statement is StatementSyntax)
                 {
                     var location = elseStatement.Statement.GetLocation();
                     var diagnostic = Diagnostic.Create(Rule, location, "false (else) clause");
